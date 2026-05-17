@@ -8,38 +8,46 @@ generator client {
 }
 
 model User {
-  id        String @id @default(cuid())
-  name      String
-  email     String @unique
+  id        String   @id @default(cuid())
+
+  email     String   @unique
+  name      String?
   password  String
-  role      String @default("tech")
 
   createdAt DateTime @default(now())
+
+  orders    Order[]
 }
 
-model Client {
-  id        String  @id @default(cuid())
+model Customer {
+  id        String   @id @default(cuid())
+
   name      String
   phone     String?
+  email     String?
+
+  createdAt DateTime @default(now())
+
   orders    Order[]
 }
 
 model Order {
   id          String   @id @default(cuid())
 
-  deviceType  String   // celular, ps4, notebook
-  brand       String?
-  model       String?
-  problem     String
+  clientName  String
+  device      String
+  problem     String?
 
-  status      String   @default("recibido")
+  status      String   @default("received")
 
-  partsCost   Float    @default(0)
-  laborCost   Float    @default(0)
-  finalPrice  Float    @default(0)
+  price       Int?
+  notes       String?
 
   createdAt   DateTime @default(now())
 
-  clientId    String
-  client      Client   @relation(fields: [clientId], references: [id])
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id])
+
+  userId      String?
+  user        User? @relation(fields: [userId], references: [id])
 }
